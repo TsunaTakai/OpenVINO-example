@@ -69,16 +69,16 @@ def main():
     args = build_argparser().parse_args()
 
     #STEP-2
-    model_xml='C:/Intel/computer_vision_sdk_2018.3.343/deployment_tools/intel_models/face-detection-retail-0004/FP32/face-detection-retail-0004.xml'
-    model_bin='C:/Intel/computer_vision_sdk_2018.3.343/deployment_tools/intel_models/face-detection-retail-0004/FP32/face-detection-retail-0004.bin'
+    model_xml='/opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-retail-0004/FP16/face-detection-retail-0004.xml'
+    model_bin='/opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-retail-0004/FP16/face-detection-retail-0004.bin'
     net = IENetwork.from_ir(model=model_xml, weights=model_bin)
 
-    model_age_xml='C:/Intel/computer_vision_sdk_2018.3.343/deployment_tools/intel_models/age-gender-recognition-retail-0013/FP32/age-gender-recognition-retail-0013.xml'
-    model_age_bin='C:/Intel/computer_vision_sdk_2018.3.343/deployment_tools/intel_models/age-gender-recognition-retail-0013/FP32/age-gender-recognition-retail-0013.bin'
+    model_age_xml='/opt/intel/computer_vision_sdk/deployment_tools/intel_models/age-gender-recognition-retail-0013/FP16/age-gender-recognition-retail-0013.xml'
+    model_age_bin='/opt/intel/computer_vision_sdk/deployment_tools/intel_models/age-gender-recognition-retail-0013/FP16/age-gender-recognition-retail-0013.bin'
     net_age = IENetwork.from_ir(model=model_age_xml, weights=model_age_bin)
 
-    model_reid_xml='C:/Intel/computer_vision_sdk_2018.3.343/deployment_tools/intel_models/face-reidentification-retail-0001/FP32/face-reidentification-retail-0001.xml'
-    model_reid_bin='C:/Intel/computer_vision_sdk_2018.3.343/deployment_tools/intel_models/face-reidentification-retail-0001/FP32/face-reidentification-retail-0001.bin'
+    model_reid_xml='/opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-reidentification-retail-0001/FP16/face-reidentification-retail-0001.xml'
+    model_reid_bin='/opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-reidentification-retail-0001/FP16/face-reidentification-retail-0001.bin'
     net_reid = IENetwork.from_ir(model=model_reid_xml, weights=model_reid_bin)
 
     # Plugin initialization for specified device and load extensions library if specified
@@ -86,7 +86,7 @@ def main():
     plugin = IEPlugin(device=args.device, plugin_dirs=args.plugin_dir)
     if args.cpu_extension and 'CPU' in args.device:
         # plugin.add_cpu_extension(args.cpu_extension)
-        plugin.add_cpu_extension('C:/Intel/computer_vision_sdk_2018.3.343/deployment_tools/inference_engine/bin/intel64/Release/cpu_extension.dll')
+        plugin.add_cpu_extension('/home/tsunamac/inference_engine_samples/intel64/Release/lib/libcpu_extension.so')
 
 
     # plugin = IEPlugin(device='CPU', plugin_dirs=None)
@@ -130,7 +130,7 @@ def main():
         input_stream = 0
     else:
         input_stream = args.input
-        assert os.path.isfile(args.input), "Specified input file doesn't exist"
+        # assert os.path.isfile(args.input), "Specified input file doesn't exist"
     
     #STEP-5
     url = "http://192.168.1.16:8081/?action=stream"
@@ -166,7 +166,7 @@ def main():
 
             #STEP-8
             for obj in res[0][0]:
-                if obj[2] > args.prob_threshol:
+                if obj[2] > args.prob_threshold:
                     xmin = int(obj[3] * cap_w)
                     ymin = int(obj[4] * cap_h)
                     xmax = int(obj[5] * cap_w)
